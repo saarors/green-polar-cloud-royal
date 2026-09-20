@@ -1,0 +1,221 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #08090b;
+  --color-surface: #121418;
+  --color-surface-2: #1a1c21;
+  --color-fg: #ecece8;
+  --color-muted: #8b8e93;
+  --color-subtle: #6b6e74;
+  --color-accent: #9fd4c8;
+  --color-accent-fg: #0a0c0b;
+  --color-border: color-mix(in oklab, var(--color-fg) 12%, transparent);
+  --color-border-strong: color-mix(in oklab, var(--color-fg) 22%, transparent);
+
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  --font-display: "Outfit", "Segoe UI", system-ui, sans-serif;
+  --font-sans: "Outfit", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-smooth-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-micro: 80ms;
+  --motion-quick: 150ms;
+  --motion-fast: 250ms;
+  --motion-slow: 400ms;
+  --motion-scale-modal: 0.96;
+}
+
+@layer base {
+  html,
+  body {
+    height: 100%;
+    background: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow: hidden;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.game-root {
+  min-height: 100dvh;
+  height: 100dvh;
+  background: var(--color-bg);
+  color: var(--color-fg);
+  touch-action: none;
+  user-select: none;
+  overflow: hidden;
+}
+
+.game-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.hud-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 2.5rem;
+  padding: 0 0.85rem;
+  background: color-mix(in oklab, var(--color-bg) 72%, transparent);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  color: var(--color-fg);
+}
+
+.overlay-scrim {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: color-mix(in oklab, var(--color-bg) 62%, transparent);
+  animation: overlay-in var(--motion-fast) var(--ease-smooth-out);
+}
+
+.overlay-panel {
+  width: min(28rem, 100%);
+  padding: 2rem 1.75rem 1.75rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 24px 60px color-mix(in oklab, #000 45%, transparent);
+}
+
+.overlay-kicker {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.crosshair {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.crosshair::before,
+.crosshair::after {
+  content: "";
+  position: absolute;
+  background: color-mix(in oklab, var(--color-fg) 70%, transparent);
+}
+
+.crosshair::before {
+  left: 4px;
+  top: 0;
+  width: 2px;
+  height: 10px;
+}
+
+.crosshair::after {
+  left: 0;
+  top: 4px;
+  width: 10px;
+  height: 2px;
+}
+
+.stick-well {
+  width: 7.25rem;
+  height: 7.25rem;
+  border-radius: 9999px;
+  border: 1px solid var(--color-border-strong);
+  background: color-mix(in oklab, var(--color-bg) 45%, transparent);
+  position: relative;
+  touch-action: none;
+}
+
+.stick-knob {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin: -1.375rem 0 0 -1.375rem;
+  border-radius: 9999px;
+  background: color-mix(in oklab, var(--color-fg) 78%, transparent);
+  pointer-events: none;
+}
+
+.minimap-frame {
+  width: 9.25rem;
+  height: 9.25rem;
+  border-radius: 9999px;
+  overflow: hidden;
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-bg);
+  box-shadow: 0 8px 28px color-mix(in oklab, #000 40%, transparent);
+}
+
+.minimap-frame canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+@keyframes overlay-in {
+  from {
+    opacity: 0;
+    transform: scale(var(--motion-scale-modal));
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 480px) {
+  .minimap-frame {
+    width: 7.25rem;
+    height: 7.25rem;
+  }
+  .overlay-panel {
+    padding: 1.5rem 1.25rem 1.25rem;
+  }
+}
